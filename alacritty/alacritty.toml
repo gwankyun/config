@@ -1,0 +1,39 @@
+[general]
+import = [
+  "~/alacritty.toml",
+]
+
+[terminal]
+shell.program = "pwsh"
+
+[window]
+# 初始窗口尺寸（行列数，非像素）
+dimensions = { columns = 120, lines = 25 }
+# 窗口内边距（内容与窗口边缘的间距，单位：pt）
+padding = { x = 10, y = 10 }
+# 窗口标题（可显示当前路径或程序名）
+dynamic_title = true
+# 不透明度
+opacity = 0.9
+
+# 字体设置（需系统已安装对应字体）
+[font]
+# 字体大小（单位：pt）
+size = 16.0
+
+[keyboard]
+bindings = [
+	# 复制 (Cmd + C)
+    { key = "C", mods = "Control", action = "Copy" },
+
+    # 粘贴 (Cmd + V)
+    { key = "V", mods = "Control", action = "Paste" },
+
+    # 新建窗口
+    { key = "N", mods = "Control", action = "CreateNewWindow" },
+
+    { key = "T", mods = "Control", action = "CreateNewTab" },
+]
+
+[cursor]
+style = { shape = "Beam", blinking = "On" }  # 当前配置：I 形光标 + 闪烁
