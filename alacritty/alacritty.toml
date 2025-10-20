@@ -23,7 +23,7 @@ size = 16.0
 
 [keyboard]
 bindings = [
-	# 复制 (Cmd + C)
+    # 复制 (Cmd + C)
     { key = "C", mods = "Control", action = "Copy" },
 
     # 粘贴 (Cmd + V)
@@ -33,6 +33,9 @@ bindings = [
     { key = "N", mods = "Control", action = "CreateNewWindow" },
 
     { key = "T", mods = "Control", action = "CreateNewTab" },
+    
+    # 關閉窗口
+    { key = "Q", mods = "Control", action = "Quit" },
 ]
 
 [cursor]

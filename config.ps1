@@ -13,8 +13,11 @@ function New-Symlink {
     )
 
     # 检查目标路径是否存在，存在则删除
-    if (Test-Path $Destination) {
+    if (Test-Path $Destination -PathType Container) {
         Write-Host "Removing existing file at $Destination"
+        Remove-Item $Destination -Recurse
+    }
+    else {
         Remove-Item $Destination
     }
 

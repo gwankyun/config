@@ -1,6 +1,45 @@
 -- 引入wezterm API
 local wezterm = require 'wezterm'
 local act = wezterm.action
+local mux = wezterm.mux
+
+-- 保存会话状态到文件
+local function save_session()
+    local state = mux.serialize_state()
+    local session_file = wezterm.home_dir .. '/.wezterm_session'
+
+    local file = io.open(session_file, 'w')
+    if file then
+        file:write(state)
+        file:close()
+        wezterm.log_info('Session saved to ' .. session_file)
+    else
+        wezterm.log_error('Failed to save session')
+    end
+end
+
+-- 从文件恢复会话
+local function restore_session()
+    local session_file = wezterm.home_dir .. '/.wezterm_session'
+    local file = io.open(session_file, 'r')
+
+    if file then
+        local state = file:read('*all')
+        file:close()
+
+        local success, err = pcall(function()
+            mux.unserialize_state(state)
+        end)
+
+        if success then
+            wezterm.log_info('Session restored from ' .. session_file)
+        else
+            wezterm.log_error('Failed to restore session: ' .. err)
+        end
+    else
+        wezterm.log_info('No session file found at ' .. session_file)
+    end
+end
 
 -- 創建配置
 local config = wezterm.config_builder()
@@ -44,5 +83,35 @@ config.mouse_bindings = {
         end),
     },
 }
+
+-- 在配置中添加键绑定
+config.keys = {
+    -- 保存会话（Ctrl+Shift+S）
+    {
+        key = 's',
+        mods = 'CTRL|SHIFT',
+        action = wezterm.action_callback(function()
+            save_session()
+        end)
+    },
+
+    -- 恢复会话（Ctrl+Shift+R）
+    {
+        key = 'r',
+        mods = 'CTRL|SHIFT',
+        action = wezterm.action_callback(function()
+            restore_session()
+        end)
+    },
+}
+
+-- 在WezTerm启动时自动恢复会话
+wezterm.on('gui-startup', function()
+    -- 检查是否有保存的会话文件
+    local session_file = wezterm.home_dir .. '/.wezterm_session'
+    if io.open(session_file, 'r') then
+        restore_session()
+    end
+end)
 
 return config
